@@ -4,10 +4,13 @@ import { Appointment,ConsentRecord,DoctorProfile,HealthcareCamp,Hospital,Medical
 export async function prepareDatabase(){
   const models=[User,PatientProfile,DoctorProfile,Hospital,Pharmacy,Appointment,MedicalDocument,Prescription,Referral,Medicine,Notification,HealthcareCamp,ConsentRecord];
   for(const Model of models){await Model.createCollection().catch(error=>{if(error.codeName!=='NamespaceExists'&&error.code!==48)throw error;});await Model.init();}
-  const adminEmail=(process.env.DEMO_ADMIN_EMAIL||'admin@healthbridge.demo').toLowerCase();
-  const adminPassword=process.env.DEMO_ADMIN_PASSWORD||'HealthBridgeDemo!2026';
-  const hash=await bcrypt.hash(adminPassword,12);
-  await User.updateOne({email:adminEmail},{$setOnInsert:{name:'HealthBridge Demo Admin',email:adminEmail,passwordHash:hash,role:'admin',language:'en',isVerified:true}},{upsert:true});
+  const seedDemoAdmin=process.env.NODE_ENV!=='production'||Boolean(process.env.DEMO_ADMIN_PASSWORD);
+  if(seedDemoAdmin){
+    const adminEmail=(process.env.DEMO_ADMIN_EMAIL||'admin@healthbridge.demo').toLowerCase();
+    const adminPassword=process.env.DEMO_ADMIN_PASSWORD||'HealthBridgeDemo!2026';
+    const hash=await bcrypt.hash(adminPassword,12);
+    await User.updateOne({email:adminEmail},{$setOnInsert:{name:'HealthBridge Demo Admin',email:adminEmail,passwordHash:hash,role:'admin',language:'en',isVerified:true}},{upsert:true});
+  }
   const hospitalData=[
     {name:'Kaveri Specialty Centre',type:'Multispecialty hospital',address:'Trichy Road, Namakkal',city:'Namakkal',district:'Namakkal',state:'Tamil Nadu',specialties:['Cardiology','Internal medicine','Orthopedics'],facilities:['Diagnostics','Teleconsultation','24/7 emergency'],accessibility:['Wheelchair access','Tamil speaking desk'],consultationFee:450,rating:4.6,phone:'+91 4286 230 100',demo:true},
     {name:'Chennai Central Heart Institute',type:'Specialty hospital',address:'Anna Salai, Chennai',city:'Chennai',district:'Chennai',state:'Tamil Nadu',specialties:['Cardiology','Cardiac surgery','Vascular care'],facilities:['Cardiac ICU','Diagnostics','Patient lodging desk','Teleconsultation'],accessibility:['Wheelchair access','Tamil and English support'],consultationFee:850,rating:4.8,phone:'+91 44 4000 1100',demo:true},

@@ -41,7 +41,7 @@ Open the local URL printed by Streamlit (usually `http://localhost:8501`). Set t
 
 1. Push this project folder to a Git repository.
 2. Create a Streamlit Community Cloud app and select `streamlit_app.py` as the entry point. Keep `requirements.txt` beside it.
-3. Deploy the Express API using the included `render.yaml` Blueprint. Render prompts for `MONGODB_URI` and `DEMO_ADMIN_PASSWORD`; enter your hosted MongoDB connection string and choose a strong demo-admin password there. Render generates `JWT_SECRET` for the API.
+3. Deploy the Express API using the included `render.yaml` Blueprint. Render prompts for `MONGODB_URI`; enter your hosted MongoDB connection string there. Render generates `JWT_SECRET` for the API.
 4. After the API is live, set `HEALTHBRIDGE_API_URL = "https://YOUR-API-SERVICE.onrender.com/api"` in the Streamlit app's **Manage app → Settings → Secrets**. Replace `YOUR-API-SERVICE` with the service hostname Render assigned.
 
 Do not put MongoDB credentials or the JWT signing key in Streamlit secrets. The Streamlit server only needs the public API URL; authenticated user requests use their session token. The supplied heart-globe Earth texture and Unsplash care photos load from their remote image URLs, so the deployed app needs outbound access to those image hosts.
@@ -99,7 +99,7 @@ npm run dev:frontend
 
 Or start both from the project root with `npm run dev`. Open <http://localhost:5173> for React. For Streamlit, follow the instructions above. The API health endpoint is <http://localhost:4000/api/health>.
 
-The first backend startup creates the `healthbridge_ai` database and the application collections if missing. It only seeds demo records by their own names and does not drop databases or collections. It creates a demo admin account if that email does not already exist:
+The first backend startup creates the `healthbridge_ai` database and the application collections if missing. It only seeds demo records by their own names and does not drop databases or collections. Local development seeds a demo admin account if that email does not already exist. Production skips that account unless `DEMO_ADMIN_PASSWORD` is set:
 
 - Email: `admin@healthbridge.demo`
 - Password: `HealthBridgeDemo!2026`
