@@ -3,6 +3,7 @@ services:
     name: healthbridge-ai-api
     runtime: docker
     plan: free
+    region: singapore
     dockerfilePath: ./backend/Dockerfile
     dockerContext: .
     healthCheckPath: /api/health
